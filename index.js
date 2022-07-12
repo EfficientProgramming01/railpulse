@@ -12,7 +12,8 @@ app.use(express.json()); // receive all in json format
 app.use(express.urlencoded({extended:false}));
 const port = process.env.PORT || 3000;
 const db_name ="Coaches";
-const collection_name ="coaches"
+const collection_name ="coaches";
+const thermal_image_collection ="thermal_image_collection";
 let responses = null ;
 
 let lteData = {}
@@ -76,11 +77,34 @@ app.get('/data',async(req,res)=>{
 app.get('/lte/:id',async(req,res)=>{  // here we get query string eg: localhost:3000/lte/:id?name=papy&age=15 WIL GIVE REPONSE {"name":"papy","age":"15"}
 
  // console.log(JSON.stringify(req.query))
- lteData = JSON.stringify(req.query)
- res.status(200).send(JSON.stringify(req.query))
-
+ lteData = req.query
+// res.status(200).send(JSON.stringify(req.query))
+ MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db(db_name);
+    var myobj = {thermalImage:lteData,updatedAt:new Date,createdAt:new Date()};
+    dbo.collection(thermal_image_collection).insertOne(myobj, function(err, resp) {
+      if (err) throw err;
+       res.send({resp})
+      db.close();
+      
+    });
+  });
  
 })
+
+app.get('/lte',async(req,res)=>{
+
+    MongoClient.connect(url, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db(db_name);
+      dbo.collection(thermal_image_collection).find({}).toArray(function(err, resp) {
+        if (err) throw err;
+        res.send({resp})
+        db.close();
+      });
+    });
+  })
 
 
 app.get('/mc',async(req,res)=>{
