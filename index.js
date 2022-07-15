@@ -128,6 +128,27 @@ app.get('/lte',async(req,res)=>{
   })
 
 
+  app.post('/lte',async(req,res)=>{
+    const lteData = req.body  // DATA FORMAT eg: { "new_Data":{"thermalImage":["23.1","24.6","21.9"]}}
+   console.log(lteData)
+    MongoClient.connect(url, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db(db_name);
+      var myobj = {thermalImage:lteData,updatedAt:new Date,createdAt:new Date()};
+      dbo.collection(thermal_image_collection).insertOne(myobj, function(err, resp) {
+        if (err) throw err;
+         res.send({resp})
+        db.close();
+        
+      });
+    });
+
+})
+
+
+
+
+
 app.get('/mc',async(req,res)=>{
 
   MongoClient.connect(url, function(err, db) {
