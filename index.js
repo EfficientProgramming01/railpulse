@@ -220,6 +220,20 @@ app.delete('/mc',async(req,res)=>{
     });
 }) 
 
+app.delete('/lte/delete',async(req,res)=>{
+  const query_Data = req.body.query_Data
+  MongoClient.connect(url, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db(db_name);
+      var myobj = query_Data;
+     dbo.collection(thermal_image_collection).deleteMany({}, function(err, resp) {
+        if (err) throw err;
+         res.send({resp})
+        db.close();
+        
+      });
+    });
+}) 
 
 // create the server
 
