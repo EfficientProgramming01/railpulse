@@ -1,5 +1,5 @@
 // grab the packages we need
-
+require("dotenv").config()
 const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
@@ -7,7 +7,7 @@ const { isModuleNamespaceObject } = require('util/types');
 
 const app = express();
 // Connection URL
-const url = 'mongodb://localhost:27017';
+const url = process.env.DATABASE //'mongodb://localhost:27017';
 app.use(express.json()); // receive all in json format
 app.use(express.urlencoded({extended:false}));
 const port = process.env.PORT || 3000;
@@ -72,6 +72,7 @@ app.get('/data',async(req,res)=>{
   res.send(lteData);
  
 })
+
 
 
 app.get('/lte/:id',async(req,res)=>{  // here we get query string eg: localhost:3000/lte/:id?name=papy&age=15 WIL GIVE REPONSE {"name":"papy","age":"15"}
